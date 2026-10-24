@@ -1,0 +1,104 @@
+# DragonSword Progression QOL
+
+An offline reward configurator for **DragonSword: Awakening**, created by **nectarines**.
+
+The bundled reward baselines and target manifest have been refreshed from DragonSword: Awakening 1.1.1, Steam build `25959946`. The included application remains version `0.9.6-rc.1`; this refresh updates its external game-data baseline without changing the executable. It builds one custom Unreal PAK from independently maintained targets and game-table baselines. Every multiplier starts at vanilla `x1`; both optional loot-shape features start off.
+
+## Features
+
+- World gathering and ordinary enemy materials: x1–x20.
+- Safe stackable world-chest rewards: x1–x10. Known unique and progression rewards remain unchanged.
+- Dungeon, hunt, raid, and Sudden Mission equipment, crafting materials, Adventurer's Emblems, gold, and Mercenary Corps Rank EXP.
+- Verified Gold and Crafting Materials from Sunken Ruins and Ruins Beneath the Waves.
+- Independent Currency EXP Items control for Character, Equipment, and Karma EXP items from the three repeatable Currency Dungeons.
+- Independent Tower of Trials x1–x10 control for verified Fragment of Memory and Whirling Thoughts floor-clear and cumulative-star rewards.
+- Equipment is capped at x10 because the equipment inventory holds 500 items.
+- Optional Spread Equipment Rolls turns a multiplied equipment stack into several independent selections from the same pool, allowing more variety without forcing unique item types.
+- Optional Favor Better Rarity shifts supported mixed pools toward their better available tier without adding quantity.
+- One generated PAK for any supported configuration.
+- Named configuration profiles stored as plain, readable JSON in the current Windows user's persistent Local AppData folder.
+- Editable UTF-8 interface language files matching all eleven languages supported by DragonSword on Steam, with automatic Windows-locale detection, a manual selector, and per-string English fallback.
+- PAK contents and SHA-256 are verified before installation.
+- The app owns one installed file: `DS_ZZZ_ProgressionQoL_Configured_P.pak`.
+
+## Install and use
+
+1. Install the Microsoft [.NET 8 Desktop Runtime (x64)](https://dotnet.microsoft.com/download/dotnet/8.0) if it is not already present.
+2. Extract the complete download to a normal folder. Keep `Languages` beside the application and do not run the app inside the ZIP.
+3. Close DragonSword: Awakening.
+4. Run `DragonSword.ProgressionQoL.exe`.
+5. Confirm the detected game location or browse to the game root, `DS`, `Paks`, `~mods`, `Win64`, or the game executable.
+6. Choose reward settings. `x1 — Default` and unchecked options preserve vanilla behavior.
+7. Select **Build + Install**.
+8. Review the conflict scan and confirm installation.
+
+Use **Profiles** to save the current reward settings under a custom name, load a saved profile, delete a profile, reset to vanilla defaults, import profiles from an older extracted release, or open the profile folder. Profiles are stored under `%LOCALAPPDATA%\nectarines\DragonSword Progression QOL\Profiles`, resolved separately for each Windows user and retained when the application folder is replaced or moved. The app always starts at vanilla defaults and never auto-loads a saved profile. Loading or deleting a profile does not build, install, or remove a PAK; only **Build + Install** changes the app's owned game file.
+
+Use the **Language** tab to choose the interface language for the next launch or open the editable language files. The first launch follows the current Windows interface language when a matching pack exists. Language choice is stored per Windows user and does not affect reward profiles or generated PAKs. See [TRANSLATING.md](TRANSLATING.md) before editing or contributing a translation.
+
+On first launch after upgrading from the portable profile format, the app safely copies validated JSON profiles found in a `Profiles` folder beside that executable into persistent storage. Old files are preserved and existing persistent profiles are never overwritten. If the older release is in another folder, use **Profiles → Import from Older Version** and select either its application folder or its `Profiles` folder.
+
+**Reset to Vanilla Defaults** resets the visible controls only. After resetting, use **Build + Install**: if this application's PAK is installed, the app asks whether to disable it and return this mod's rewards to vanilla behavior. The PAK is preserved as a non-loadable backup. Other mods are never changed.
+
+The PAK is installed to `DS\Content\Paks\~mods`. Reconfiguring does not require manual deletion: the replacement is first written under a non-loadable temporary name and hash-verified, then any current owned copy in either `Paks` or `Paks\~mods` is moved to `DS\Content\Paks\ProgressionQoL-Backups` with a non-loadable `.pak.disabled` extension. The final installed copy is hash-verified again.
+
+See [INSTALLATION.md](INSTALLATION.md) for troubleshooting and [UNINSTALL.md](UNINSTALL.md) for complete removal.
+
+## Transparent security model
+
+The application:
+
+- is an unobfuscated, framework-dependent .NET 8 WinForms application;
+- makes no network connections and contains no telemetry or updater;
+- requests no administrator rights;
+- performs no DLL injection or game-executable modification;
+- uses no installer service and makes no registry changes;
+- never downloads a dependency;
+- stores optional profiles as unobfuscated JSON in the visible per-user `%LOCALAPPDATA%\nectarines\DragonSword Progression QOL\Profiles` folder;
+- reads text-only language packs from the visible `Languages` folder, limits each file to 512 KiB, ignores invalid files, and never interprets their contents as code;
+- scans other PAKs read-only and never disables, deletes, or moves them;
+- installs only after explicit confirmation.
+
+The bundled `repak.exe` is the open-source Unreal PAK tool by trumank. It is used locally to pack, list, unpack, and verify the generated PAK. Its complete MIT and Apache-2.0 license texts are included.
+
+## Compatibility and conflicts
+
+The generated PAK may contain these game paths:
+
+- `DS/Content/Design/GameData/RewardRandomData.table`
+- `DS/Content/Design/GameData/RewardData.table` when Spread is enabled
+- `DS/Content/Design/GameData/PropCollectData.table` when gathering is changed
+- matching generated server XML files
+
+Another PAK editing the same tables conflicts at the file level; Unreal PAK load order does not merge individual rows. The built-in scanner checks every non-official PAK in `Paks` and `Paks\~mods`—including Treasure Respawn by contents—and verifies its internal paths before warning.
+
+The table baseline was extracted from unmodified game version 1.0.10, Steam build `24831799`. Every managed reward-system table was confirmed byte-identical to the validated 1.0.9 baseline; only the English localization table changed. Automatic installation checks the local Steam manifest. A newer or unverifiable build receives a clear compatibility warning but may continue; a known older build remains blocked until the game is updated. Because a game update can change these full reward tables, restore vanilla behavior and watch the mod page for an update if rewards behave unexpectedly. Building alone never modifies the game.
+
+## Independent provenance
+
+- Activity targets come from the Dungeon QOL work authored by nectarines in this workspace.
+- Enemy-material and gathering targets are derived from unmodified game-table fields and item classifications.
+- Safe chest and rarity targets are derived from unmodified game-table relationships.
+- Tower targets follow 78 verified unmodified `RewardData` to `RewardRandomData` routes and are never selected globally by item ID.
+- The application does not ingest another mod, require another mod, or include another mod's files, settings, branding, or artwork.
+- Release artwork is an original AI-generated fantasy reward-forge scene created for this project. It contains no game characters, logos, or third-party mod assets.
+
+See [PROVENANCE.md](PROVENANCE.md) for the detailed boundary and [SECURITY.md](SECURITY.md) for the audit surface.
+
+## Source and development
+
+Build with the .NET 8 SDK:
+
+```powershell
+dotnet build .\src\DragonSword.ProgressionQoL\DragonSword.ProgressionQoL.csproj -c Release
+```
+
+The `--build-test <output-folder>` switch runs the same build engine with a validation profile. It does not install or change game files. Every supported switch is documented in [COMMAND-LINE.md](COMMAND-LINE.md).
+
+## License
+
+Application source and project-authored documentation are released under the MIT License. See [LICENSE.txt](LICENSE.txt). Third-party components retain their own licenses in [THIRD-PARTY-NOTICES.txt](THIRD-PARTY-NOTICES.txt).
+
+## AI disclosure
+
+OpenAI Codex assisted with application code, interface implementation, testing tools, and documentation. Original release artwork was generated for this project with OpenAI image generation. The source remains unobfuscated and auditable.
